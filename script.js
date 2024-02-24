@@ -28,6 +28,25 @@ class Tree {
 
         return newNode;
 
+    };
+
+    insert(value) {
+        this.root = this.insertRec(this.root, value);
+    }
+
+    insertRec(root, value) {
+        if (root == null) {
+            root = new Node(value);
+            return root;
+        }
+
+        if (value < root.data) {
+            root.left = this.insertRec(root.left, value);
+        } else if (value > root.data) {
+            root.right = this.insertRec(root.right, value);
+        }
+
+        return root;
     }
 
     prettyPrint() {
@@ -49,8 +68,13 @@ class Tree {
 }
 
 const array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
-array.sort((a,b) => a - b)
-const t = new Tree(array);
+const sortedArray = array.sort((a,b) => a - b)
 
+console.log(sortedArray);
 
-t.prettyPrint();
+const t = new Tree(sortedArray);
+
+t.insert(236);
+t.insert(12);
+
+t.prettyPrint(); 
