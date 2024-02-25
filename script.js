@@ -49,6 +49,46 @@ class Tree {
         return root;
     }
 
+    inOrder(root) {
+        if (root !== null) {
+            this.inOrder(root.left);
+            console.log(root.data);
+            this.inOrder(root.right);
+        }
+    }
+
+    deleteNode(root, data) {
+        if (root === null) {
+            return root;
+        }
+    
+        if (root.data > data) {
+            root.left = this.deleteNode(root.left, data);
+        } else if (root.data < data) {
+            root.right = this.deleteNode(root.right, data);
+        } else {
+            if (root.left === null) {
+                return root.right;
+            } else if (root.right === null) {
+                return root.left;
+            }
+    
+            let successor = this.findMin(root.right);
+            root.data = successor.data;
+            root.right = this.deleteNode(root.right, successor.data);
+        }
+    
+        return root;
+    }
+    
+    findMin(node) {
+        while (node.left !== null) {
+            node = node.left;
+        }
+        return node;
+    }
+    
+
     prettyPrint() {
         const printNode = (newNode, prefix = "", isLeft = true) => {
             if (newNode === null) {
@@ -76,5 +116,7 @@ const t = new Tree(sortedArray);
 
 t.insert(236);
 t.insert(12);
-
+t.deleteNode(t.root, 236);
+t.deleteNode(t.root, 5);
+t.inOrder(t.root);
 t.prettyPrint(); 
