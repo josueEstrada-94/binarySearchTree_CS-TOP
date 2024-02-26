@@ -13,7 +13,7 @@ class Tree {
         } else {
             this.root = this.buildTree(array, 0, array.length - 1);
         }
-    }
+    };
 
     buildTree(array, start, end) {
         if (start > end) {
@@ -32,7 +32,7 @@ class Tree {
 
     insert(value) {
         this.root = this.insertRec(this.root, value);
-    }
+    };
 
     insertRec(root, value) {
         if (root == null) {
@@ -47,15 +47,7 @@ class Tree {
         }
 
         return root;
-    }
-
-    inOrder(root) {
-        if (root !== null) {
-            this.inOrder(root.left);
-            console.log(root.data);
-            this.inOrder(root.right);
-        }
-    }
+    };
 
     deleteNode(root, data) {
         if (root === null) {
@@ -79,13 +71,134 @@ class Tree {
         }
     
         return root;
-    }
+    };
     
     findMin(node) {
         while (node.left !== null) {
             node = node.left;
         }
         return node;
+    };
+
+    find(value) {
+        return this.findRec(this.root, value);
+    };
+
+    findRec(root, value) {
+        if (root === null || root.data === value) {
+            return root;
+        }
+
+        if (value < root.data) {
+            return this.findRec(root.left, value);
+        } else {
+            return this.findRec(root.right, value);
+        }
+    };
+
+    levelOrder(callback) {
+        const resultArray = [];
+        const queue = [];
+        
+        if (this.root !== null) {
+            queue.push(this.root);
+
+            while (queue.length > 0) {
+                const currentNode = queue.shift();
+                resultArray.push(currentNode.data);
+
+                if (callback) {
+                    callback(currentNode)
+                }
+
+                if (currentNode.left !== null) {
+                    queue.push(currentNode.left);
+                }
+
+                if (currentNode.right !== null) {
+                    queue.push(currentNode.right);
+                }
+            }
+
+            return resultArray;
+        }
+    };
+
+    inOrder(callback) {
+        const resultArray = [];
+
+        const inOrderTraversal = (node) => {
+            if (node !== null) {
+                inOrderTraversal(node.left);
+
+                resultArray.push(node.data);
+
+                if (callback && typeof callback === 'function') {
+                    callback(node);
+                }
+
+                inOrderTraversal(node.right);
+            }
+        };
+
+        inOrderTraversal(this.root);
+        
+        return resultArray;   
+    };
+
+    preOrder(callback) {
+        const resultArray = [];
+
+        const preOrderTraversal = (node) => {
+            if (node !== null) {
+                resultArray.push(node.data);
+                
+                if (callback) {
+                    callback(node);
+                }
+
+                preOrderTraversal(node.left);
+                preOrderTraversal(node.right);
+            }
+        };
+
+        preOrderTraversal(this.root);
+
+        return resultArray;
+    }
+
+    postOrder(callback) {
+        const resultArray = [];
+
+        const postOrderTraversal = (node) => {
+            if (node !== null) {
+                postOrderTraversal(node.left);
+                postOrderTraversal(node.right);
+
+                resultArray.push(node.data);
+
+                if (callback) {
+                    callback(node);
+                }
+
+                
+            }
+        };
+
+        postOrderTraversal(this.root);
+
+        return resultArray;
+    };
+
+    height(root) {
+        if (root === null) {
+            return -1;
+        } else {
+            const leftHeight = root.left ? this.height(root.left) : -1;
+            const rightHeight = root.right ? this.height(root.right) : -1;
+
+            return Math.max(leftHeight, rightHeight) + 1;
+        }
     }
     
 
@@ -117,6 +230,29 @@ const t = new Tree(sortedArray);
 t.insert(236);
 t.insert(12);
 t.deleteNode(t.root, 236);
-t.deleteNode(t.root, 5);
+t.deleteNode(t.root, 12);
 t.inOrder(t.root);
+/*
+const searchResult = t.find(23);
+const searchResult2 = t.find(56);
+
+if (searchResult2) {
+    console.log('The value exist in the tree.');
+} else {
+    console.log(`The value does not exist in the tree.`);
+}
+
+const resultArray = t.levelOrder(node => {
+    console.log(node.data);
+})*/
+console.log('Level Order Result: ', t.levelOrder());
+
+console.log('In Order result: ', t.inOrder());
+
+console.log('Pre Order result: ', t.preOrder());
+
+console.log('Post Order result: ', t.postOrder());
+
+console.log('Height of the Tree: ', t.height(t.root));
+
 t.prettyPrint(); 
