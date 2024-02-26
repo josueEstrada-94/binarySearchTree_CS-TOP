@@ -200,7 +200,39 @@ class Tree {
             return Math.max(leftHeight, rightHeight) + 1;
         }
     }
-    
+
+    depth(root, value) {
+        return this.depthRec(this.root, value, 0);
+    };
+
+    depthRec(node, value, currentDepth) {
+        if (node === null) {
+            return -1;
+        }
+
+        if (node.data === value) {
+            return currentDepth;
+        } else if (value < node.data) {
+            return this.depthRec(node.left, value, currentDepth + 1);
+        } else {
+            return this.depthRec(node.right, value, currentDepth + 1);
+        }
+    };
+
+    isBalanced(root) {
+        if (root === null) {
+            return true;
+        }
+
+        const leftHeight = this.height(root.left);
+        const rightHeight = this.height(root.right);
+
+        if (Math.abs(leftHeight - rightHeight) <= 1 && this.isBalanced(root.left) && this.isBalanced(root.right)) {
+           return true; 
+        } else {
+            return false;
+        }
+    }
 
     prettyPrint() {
         const printNode = (newNode, prefix = "", isLeft = true) => {
@@ -229,7 +261,7 @@ const t = new Tree(sortedArray);
 
 t.insert(236);
 t.insert(12);
-t.deleteNode(t.root, 236);
+//t.deleteNode(t.root, 236);
 t.deleteNode(t.root, 12);
 t.inOrder(t.root);
 /*
@@ -254,5 +286,14 @@ console.log('Pre Order result: ', t.preOrder());
 console.log('Post Order result: ', t.postOrder());
 
 console.log('Height of the Tree: ', t.height(t.root));
+
+const depthOfValue = t.depth(this.root, 236);
+
+if (depthOfValue !== -1) {
+    console.log(`Depth of the value: ${depthOfValue}`);
+} else {
+    console.log('Value not found in the tree.');
+}
+console.log(t.isBalanced(t.root));
 
 t.prettyPrint(); 
