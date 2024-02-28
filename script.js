@@ -228,10 +228,47 @@ class Tree {
         const rightHeight = this.height(root.right);
 
         if (Math.abs(leftHeight - rightHeight) <= 1 && this.isBalanced(root.left) && this.isBalanced(root.right)) {
-           return true; 
+           console.log('The Binary Search Tree is Balanced'); 
         } else {
             return false;
         }
+    }
+
+    buildNodesFromValues(values) {
+        return values.map(value => new Node(value));
+    }
+
+    rebalance() {
+        if (this.root === null) {
+            return null
+        }
+
+        // Getting the nodes in order
+
+        const inOrderNodes = this.inOrder(this.root);
+
+        // Building new nodes from numeric values.
+        const nodes = this.buildNodesFromValues(inOrderNodes);
+
+        // Building a new balanced BST
+
+        this.root = this.buildBalancedTree(nodes);
+    }
+
+    buildBalancedTree(nodes) {
+        if (nodes.length === 0) {
+            return null;
+        }
+
+        // Obtain the middle node
+        const middle = Math.floor(nodes.length / 2);
+        const middleNode = nodes[middle];
+
+        // Build left subtree and right subtree recursively
+        middleNode.left = this.buildBalancedTree(nodes.slice(0, middle));
+        middleNode.right = this.buildBalancedTree(nodes.slice(middle + 1));
+        
+        return middleNode;
     }
 
     prettyPrint() {
@@ -252,6 +289,7 @@ class Tree {
     }
 }
 
+
 const array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const sortedArray = array.sort((a,b) => a - b)
 
@@ -261,22 +299,12 @@ const t = new Tree(sortedArray);
 
 t.insert(236);
 t.insert(12);
-//t.deleteNode(t.root, 236);
-t.deleteNode(t.root, 12);
+
+t.deleteNode(t.root, 67);
+t.deleteNode(t.root, 7);
+
 t.inOrder(t.root);
-/*
-const searchResult = t.find(23);
-const searchResult2 = t.find(56);
 
-if (searchResult2) {
-    console.log('The value exist in the tree.');
-} else {
-    console.log(`The value does not exist in the tree.`);
-}
-
-const resultArray = t.levelOrder(node => {
-    console.log(node.data);
-})*/
 console.log('Level Order Result: ', t.levelOrder());
 
 console.log('In Order result: ', t.inOrder());
@@ -296,4 +324,5 @@ if (depthOfValue !== -1) {
 }
 console.log(t.isBalanced(t.root));
 
+t.rebalance();
 t.prettyPrint(); 
